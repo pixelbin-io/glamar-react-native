@@ -5,7 +5,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import * as Crypto from "crypto-js";
 import { URL } from "react-native-url-polyfill"; // uses the polyfill we loaded
 
-const BASE_URL = "https://api.pixelbinz0.de";
+const BASE_URL = "https://api.pixelbin.io";
 const HEADER_PREFIX = "x-ebg-";
 const SIGNING_KEY = "1234567"; // TODO: inject this from config/env
 

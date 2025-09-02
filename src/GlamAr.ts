@@ -11,10 +11,7 @@ const GlamAr = {
     (async () => {
       let bundleId = await getAppBundleId();
       config.parentDomain = bundleId;
-      console.log("init bundle id", bundleId);
       setGlamArConfig(config);
-      // Send to the page (our WebViewBridge will queue until ready)
-      // sendMessageToWebView({ type: "initialize", payload: enriched });
     })();
   },
 
@@ -26,6 +23,28 @@ const GlamAr = {
     sendMessageToWebView({ type: "applyByCategory", payload: category });
   },
 
+  applyByMultipleConfigData(config: any) {
+    sendMessageToWebView({
+      type: "applyByMultipleConfigData",
+      payload: config,
+    });
+  },
+
+  onAddedToCart(skuId: string) {
+    sendMessageToWebView({ type: "addedToCart", payload: skuId });
+  },
+
+  onAddedToWishlist(skuId: string) {
+    sendMessageToWebView({ type: "addedToWishlist", payload: skuId });
+  },
+
+  applyPatternId(myPatternId: string) {
+    sendMessageToWebView({
+      type: "applyPatternByID",
+      payload: { patternId: myPatternId },
+    });
+  },
+
   snapshot() {
     sendMessageToWebView({ type: "snapshot" });
   },
@@ -35,10 +54,15 @@ const GlamAr = {
   },
 
   open(mode?: string, imgURL?: string) {
-    sendMessageToWebView({
-      type: "openLivePreview",
-      payload: mode ? { mode, imgURL } : undefined,
-    });
+    if (mode)
+      sendMessageToWebView({
+        type: "openLivePreview",
+        payload: mode ? { mode, imgURL } : undefined,
+      });
+    else
+      sendMessageToWebView({
+        type: "openLivePreview",
+      });
   },
 
   close() {
