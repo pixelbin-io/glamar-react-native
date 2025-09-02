@@ -18,13 +18,13 @@
 
 ### 1. Add the SDK tarball
 
-Place `glamar-react-native-1.0.0.tgz` in your project root.
+Place `glamar-react-native-2.0.0.tgz` in your project root.
 
 Then update your `package.json`:
 
 ```json
 "dependencies": {
-  "glamar-react-native": "file:./glamar-react-native-1.0.0.tgz"
+  "glamar-react-native": "file:./glamar-react-native-2.0.0.tgz"
 }
 ```
 
