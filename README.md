@@ -16,7 +16,15 @@
 
 ## 📦 Installation
 
-### 1. Add the SDK tarball
+### 1. Add the SDK
+
+Via NPM
+
+```bash
+npm i @glamar/core-react-native
+```
+
+or manually
 
 Place `glamar-react-native-2.0.0.tgz` in your project root.
 
@@ -24,7 +32,7 @@ Then update your `package.json`:
 
 ```json
 "dependencies": {
-  "glamar-react-native": "file:./glamar-react-native-2.0.0.tgz"
+  "glamar-react-native": "file:./glamar-react-native-1.0.0.tgz"
 }
 ```
 

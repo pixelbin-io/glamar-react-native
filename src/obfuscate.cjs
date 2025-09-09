@@ -1,51 +1,55 @@
 /* eslint-disable no-console */
 const fs = require("fs");
 const path = require("path");
-
-// Only run if explicitly enabled
-if (!process.env.OBFUSCATE) {
-  console.log("[obfuscate] OBFUSCATE not set -> skipping.");
-  process.exit(0);
-}
-
-// Try to load obfuscator, skip if not installed
-let obfuscate;
+let JavaScriptObfuscator;
 try {
-  ({ obfuscate } = require("javascript-obfuscator"));
-} catch (e) {
+  JavaScriptObfuscator = require("javascript-obfuscator");
+} catch {
   console.log("[obfuscate] 'javascript-obfuscator' not installed -> skipping.");
   process.exit(0);
 }
 
-// Choose the files you truly care about.
-// Start with a small set to keep perf good.
-const targets = [
-  // adjust these to real outputs in dist:
-  "dist/GlamArApi.js",
-  "dist/WebViewBridge.js",
-  // "dist/sensitive-core.js", // only if you have it
-].filter((p) => fs.existsSync(p));
-
-if (targets.length === 0) {
-  console.log("[obfuscate] No target files found -> skipping.");
+const targetDir = process.argv[2] || "dist/esm";
+if (!fs.existsSync(targetDir)) {
+  console.log(`[obfuscate] ${targetDir} not found -> skipping.`);
   process.exit(0);
 }
 
-for (const file of targets) {
-  const code = fs.readFileSync(file, "utf8");
-  const result = obfuscate(code, {
-    compact: true,
-    controlFlowFlattening: true,
-    deadCodeInjection: true,
-    stringArray: true,
-    stringArrayRotate: true,
-    stringArrayThreshold: 0.75,
-    transformObjectKeys: true,
-    simplify: true,
-    target: "node", // fine for Metro/Hermes input
-  });
-  fs.writeFileSync(file, result.getObfuscatedCode(), "utf8");
-  console.log(`[obfuscate] Obfuscated ${file}`);
+function* walk(dir) {
+  for (const name of fs.readdirSync(dir)) {
+    const p = path.join(dir, name);
+    const s = fs.statSync(p);
+    if (s.isDirectory()) yield* walk(p);
+    else if (p.endsWith(".js")) yield p;
+  }
 }
 
-console.log(`[obfuscate] Done (${targets.length} files).`);
+// RN/Hermes-friendly profile:
+const options = {
+  compact: true,
+  controlFlowFlattening: false,
+  deadCodeInjection: false,
+  stringArray: false, // enable only if you measure perf
+  stringArrayThreshold: 0.2,
+  transformObjectKeys: false,
+  simplify: true,
+  identifierNamesGenerator: "hexadecimal",
+  renameGlobals: false,
+  target: "browser",
+  reservedNames: [
+    "^GlamAr$",
+    "^GlamArProvider$",
+    "^React$",
+    "^__DEV__$",
+    "^HermesInternal$",
+  ],
+};
+
+let count = 0;
+for (const file of walk(targetDir)) {
+  const code = fs.readFileSync(file, "utf8");
+  const result = JavaScriptObfuscator.obfuscate(code, options);
+  fs.writeFileSync(file, result.getObfuscatedCode(), "utf8");
+  count++;
+}
+console.log(`[obfuscate] Obfuscated ${count} files in ${targetDir}`);

@@ -1,19 +1,32 @@
 {
-  "name": "glamar-react-native",
-  "version": "2.0.0",
+  "name": "@glamar/core-react-native",
+  "description": "GlamAR SDK for React Native",
+  "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "react-native": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "react-native": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "homepage": "https://www.glamar.io/docs/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixelbin-io/glamar-react-native.git"
+  },
   "exports": {
     ".": {
-      "react-native": "./dist/index.js",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "react-native": "./dist/esm/index.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts"
     }
   },
+  "keywords": [
+    "react-native",
+    "glamar",
+    "ar",
+    "sdk"
+  ],
   "files": [
     "dist",
     "README.md",
@@ -22,10 +35,19 @@
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf dist || rm -rf dist",
-    "build:esm": "tsc && node src/make-cjs.cjs",
-    "minify": "node src/minify.cjs && node src/obfuscate.cjs",
-    "build": "npm run clean && npm run build:esm && npm run minify",
-    "prepare": "npm run build"
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "minify:esm": "node src/minify.cjs dist/esm && node src/obfuscate.cjs dist/esm",
+    "minify:cjs": "node src/minify.cjs dist/cjs && node src/obfuscate.cjs dist/cjs",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run minify:esm && npm run minify:cjs",
+    "verify:peers": "node scripts/verify-peers.cjs",
+    "pack:check": "npm pack --dry-run",
+    "pack": "npm pack",
+    "prepack": "npm run verify:peers && npm run build",
+    "prepublishOnly": "npm run verify:peers && npm run build && npm run pack:check",
+    "release:patch": "npm version patch && npm publish --access public",
+    "release:minor": "npm version minor && npm publish --access public",
+    "release:major": "npm version major && npm publish --access public"
   },
   "peerDependencies": {
     "react": "19.1.0",
@@ -62,5 +84,13 @@
     "rimraf": "6.0.1",
     "terser": "^5.43.1",
     "typescript": "5.9.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=18.17",
+    "npm": ">=9"
   }
 }
