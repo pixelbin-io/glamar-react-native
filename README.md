@@ -1,4 +1,4 @@
-# glamar-react-native
+# GlamAR React Native
 
 **GlamAR React Native SDK** – Seamless integration of the GlamAR Web SDK into React Native apps using WebView.
 
