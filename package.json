@@ -1,5 +1,5 @@
 {
-  "name": "@glamar/core-react-native",
+  "name": "@glamario/core-react-native",
   "description": "GlamAR SDK for React Native",
   "version": "1.0.0",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "minify:esm": "node src/minify.cjs dist/esm && node src/obfuscate.cjs dist/esm",
     "minify:cjs": "node src/minify.cjs dist/cjs && node src/obfuscate.cjs dist/cjs",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run minify:esm && npm run minify:cjs",
-    "verify:peers": "node scripts/verify-peers.cjs",
+    "verify:peers": "node src/verify-peers.cjs",
     "pack:check": "npm pack --dry-run",
     "pack": "npm pack",
     "prepack": "npm run verify:peers && npm run build",
@@ -50,10 +50,10 @@
     "release:major": "npm version major && npm publish --access public"
   },
   "peerDependencies": {
-    "react": "19.1.0",
-    "react-native": "0.80.0",
-    "react-native-device-info": "^14.0.4",
-    "react-native-webview": "13.15.0"
+    "react": ">=18 <20",
+    "react-native": ">=0.68.0",
+    "react-native-webview": ">=11.0.0",
+    "react-native-device-info": ">=10.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -63,6 +63,9 @@
       "optional": true
     },
     "react-native-webview": {
+      "optional": true
+    },
+    "react-native-device-info": {
       "optional": true
     }
   },
@@ -86,8 +89,7 @@
     "typescript": "5.9.2"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "engines": {
     "node": ">=18.17",

@@ -18,21 +18,26 @@
 
 ### 1. Add the SDK
 
-Via NPM
-
 ```bash
-npm i @glamar/core-react-native
+# Using npm
+npm i @glamario/core-react-native react-native-webview
+
+# Using yarn
+yarn add @glamario/core-react-native react-native-webview
+
+# Using pnpm
+pnpm add @glamario/core-react-native react-native-webview
 ```
 
 or manually
 
-Place `glamar-react-native-2.0.0.tgz` in your project root.
+Download glamAR react native <a href="https://github.com/pixelbin-io/glamar-react-native/releases">Package</a> And place it in your project root.
 
 Then update your `package.json`:
 
 ```json
 "dependencies": {
-  "glamar-react-native": "file:./glamar-react-native-1.0.0.tgz"
+  "@glamario/core-react-native": "glamar-react-native.tgz"
 }
 ```
 
@@ -41,10 +46,11 @@ Then update your `package.json`:
 Ensure these exist in your app's `package.json`:
 
 ```json
-"react-native": "0.80.0",
-"react-native-webview": "13.15.0",
-"react-native-device-info": "^14.0.4",
-"react-native-permissions": "5.4.2"
+ "react": ">=18 <20",
+  "react-native": ">=0.68.0",
+  "react-native-webview": ">=11.0.0",
+  "react-native-device-info": ">=10.0.0",
+  "react-native-permissions": ">=3.8.0"
 ```
 
 Then run:
@@ -116,6 +122,12 @@ In `Info.plist`:
 
 ## 🧠 SDK Usage
 
+### Import
+
+```tsx
+import { GlamAr, GlamArProvider } from "@glamario/core-react-native";
+```
+
 ### Initialize
 
 ```tsx
@@ -146,7 +158,7 @@ useEffect(() => {
 ```javascript
 import React, { useEffect } from "react";
 import { SafeAreaView, View, Button, StyleSheet } from "react-native";
-import { GlamAr, GlamArProvider } from "glamar-react-native";
+import { GlamAr, GlamArProvider } from "@glamario/core-react-native";
 
 export default function App() {
   useEffect(() => {
@@ -241,4 +253,4 @@ Detailed documentation available at https://www.glamar.io/docs/
 
 ## ✅ License
 
-Proprietary – All rights reserved by GlamAR.
+Proprietary – All rights reserved. -> ## License MIT
