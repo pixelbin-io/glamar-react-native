@@ -20,13 +20,13 @@
 
 ```bash
 # Using npm
-npm i @glamario/core-react-native react-native-webview
+npm i @glamario/core-react-native
 
 # Using yarn
-yarn add @glamario/core-react-native react-native-webview
+yarn add @glamario/core-react-native
 
 # Using pnpm
-pnpm add @glamario/core-react-native react-native-webview
+pnpm add @glamario/core-react-native
 ```
 
 or manually
@@ -253,4 +253,4 @@ Detailed documentation available at https://www.glamar.io/docs/
 
 ## ✅ License
 
-Proprietary – All rights reserved. -> ## License MIT
+MIT
