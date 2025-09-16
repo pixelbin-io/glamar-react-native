@@ -25,7 +25,8 @@
     "react-native",
     "glamar",
     "ar",
-    "sdk"
+    "sdk",
+    "skin analysis"
   ],
   "files": [
     "dist",

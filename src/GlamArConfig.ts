@@ -4,6 +4,8 @@ export type GlamArConfig = {
   meta?: any;
   parentDomain?: string;
   development?: boolean;
+  category?: string;
+  configuration?: any;
 };
 
 let currentConfig: GlamArConfig | null = null;
