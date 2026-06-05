@@ -218,6 +218,8 @@ const styles = StyleSheet.create({
 | `GlamAr.init(config)`              | Initializes the SDK                              |
 | `GlamAr.applySku(skuId)`           | Applies a specific SKU                           |
 | `GlamAr.applyByCategory(category)` | Applies the first SKU from a category            |
+| `GlamAr.comparison(state, skus)`   | Sends comparison state and SKU list              |
+| `GlamAr.onNailColorEvents(options, value)` | Sends nail color options and value      |
 | `GlamAr.snapshot()`                | Captures a snapshot (fires `photo-loaded` event) |
 | `GlamAr.reset()`                   | Clears current applied items                     |
 | `GlamAr.open()` / `close()`        | Opens or closes the live preview mode            |

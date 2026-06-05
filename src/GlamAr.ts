@@ -30,6 +30,24 @@ const GlamAr = {
     });
   },
 
+  comparison(state: string, skus: string[]) {
+    sendMessageToWebView({
+      type: "comparison",
+      payload: { state, skus },
+    });
+  },
+
+  onNailColorEvents(options?: string | null, value?: unknown) {
+    const payload: { options?: string; value?: unknown } = {};
+    if (options != null) payload.options = options;
+    if (value != null) payload.value = value;
+
+    sendMessageToWebView({
+      type: "nailColor",
+      payload,
+    });
+  },
+
   onAddedToCart(skuId: string) {
     sendMessageToWebView({ type: "addedToCart", payload: skuId });
   },

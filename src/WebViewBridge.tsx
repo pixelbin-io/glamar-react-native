@@ -43,7 +43,10 @@ async function resolveSdkUrl(sourceUrl: string): Promise<string> {
   if (cfg?.apiKey) {
     try {
       const api = new GlamArApi(cfg.apiKey, cfg.development ?? true);
-      const v = await api.getVersion();
+      const appId = cfg.configuration?.skinAnalysis?.appId;
+      const v = await api.getVersion(
+        typeof appId === "string" ? appId : undefined
+      );
       console.log("resolveSdkUrl success", v);
       if (v?.sdkVersion) version = v.sdkVersion;
       else if (cfg.meta?.sdkVersion) version = cfg.meta.sdkVersion;
