@@ -218,6 +218,7 @@ const styles = StyleSheet.create({
 | `GlamAr.init(config)`              | Initializes the SDK                              |
 | `GlamAr.applySku(skuId)`           | Applies a specific SKU                           |
 | `GlamAr.applyByCategory(category)` | Applies the first SKU from a category            |
+| `GlamAr.configChange(type, value)` | Sends a configuration change                     |
 | `GlamAr.comparison(state, skus)`   | Sends comparison state and SKU list              |
 | `GlamAr.onNailColorEvents(options, value)` | Sends nail color options and value      |
 | `GlamAr.snapshot()`                | Captures a snapshot (fires `photo-loaded` event) |
