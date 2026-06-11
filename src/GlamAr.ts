@@ -5,6 +5,11 @@ import GlamArEmitter from "./GlamArEvents";
 import { GlamArConfig, setGlamArConfig } from "./GlamArConfig";
 import { getAppBundleId } from "./AppMeta";
 
+type ConfigChangePayload = {
+  type: string;
+  value: number;
+};
+
 const GlamAr = {
   init(config: GlamArConfig) {
     // Fill parentDomain if not provided
@@ -27,6 +32,29 @@ const GlamAr = {
     sendMessageToWebView({
       type: "applyByMultipleConfigData",
       payload: config,
+    });
+  },
+
+  configChange(type: string, value: number) {
+    const payload: ConfigChangePayload = { type, value };
+    sendMessageToWebView({ type: "onConfigChange", payload });
+  },
+
+  comparison(state: string, skus: string[]) {
+    sendMessageToWebView({
+      type: "comparison",
+      payload: { state, skus },
+    });
+  },
+
+  onNailColorEvents(options?: string | null, value?: unknown) {
+    const payload: { options?: string; value?: unknown } = {};
+    if (options != null) payload.options = options;
+    if (value != null) payload.value = value;
+
+    sendMessageToWebView({
+      type: "nailColor",
+      payload,
     });
   },
 

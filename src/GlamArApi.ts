@@ -15,11 +15,16 @@ export interface VersionResponse {
 }
 
 export class GlamArApi {
-  constructor(private accessKey: string, private development: boolean = true) {}
+  constructor(
+    private accessKey: string,
+    private development: boolean = true,
+  ) {}
 
-  async getVersion(): Promise<VersionResponse | null> {
+  async getVersion(appId?: string): Promise<VersionResponse | null> {
     try {
-      const url = `${BASE_URL}/service/private/misc/v3.0/sdk-settings/version`;
+      const url = `${BASE_URL}/service/private/misc/v3.0/sdk-settings/version${
+        appId ? `?appId=${encodeURIComponent(appId)}` : ""
+      }`;
 
       // Build signed headers
       const now = new Date();
@@ -31,7 +36,7 @@ export class GlamArApi {
         method: "GET",
         headers: {
           Authorization: `Bearer ${Buffer.from(this.accessKey).toString(
-            "base64"
+            "base64",
           )}`,
           host: new URL(url).host,
           [`${HEADER_PREFIX}param`]: utcString,
@@ -42,7 +47,7 @@ export class GlamArApi {
       const canonical = this.generateCanonicalString(request);
       const signature = this.generateHmac(
         SIGNING_KEY,
-        `${utcString}\n${this.sha256(canonical)}`
+        `${utcString}\n${this.sha256(canonical)}`,
       );
 
       request.headers![`${HEADER_PREFIX}signature`] = `v1:${signature}`;
@@ -91,7 +96,7 @@ export class GlamArApi {
   private sortedAndEncodedQueryParams(url: URL): string {
     const params = Array.from(url.searchParams.entries());
     const encoded = params.map(
-      ([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`
+      ([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`,
     );
     return encoded.sort().join("&");
   }
@@ -101,8 +106,8 @@ export class GlamArApi {
     return Object.entries(headers)
       .filter(([name]) =>
         [HEADER_PREFIX, "host"].some((prefix) =>
-          name.toLowerCase().startsWith(prefix)
-        )
+          name.toLowerCase().startsWith(prefix),
+        ),
       )
       .map(([name, value]) => `${name.toLowerCase()}:${String(value).trim()}`)
       .sort()
@@ -114,8 +119,8 @@ export class GlamArApi {
     return Object.keys(headers)
       .filter((name) =>
         [HEADER_PREFIX, "host"].some((prefix) =>
-          name.toLowerCase().startsWith(prefix)
-        )
+          name.toLowerCase().startsWith(prefix),
+        ),
       )
       .map((name) => name.toLowerCase())
       .sort()
