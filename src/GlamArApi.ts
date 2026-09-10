@@ -5,9 +5,19 @@ import axios, { AxiosRequestConfig } from "axios";
 import * as Crypto from "crypto-js";
 import { URL } from "react-native-url-polyfill"; // uses the polyfill we loaded
 
-const BASE_URL = "https://api.pixelbin.io";
+const VERSION_API_URLS = [
+  "https://api.glamar.fynd.com/service/private/glamar/",
+  "https://api.pixelbin.io/service/private/misc/",
+];
 const HEADER_PREFIX = "x-ebg-";
 const SIGNING_KEY = "1234567"; // TODO: inject this from config/env
+
+export interface VersionApiResponse {
+  url: string;
+  status: number | null;
+  data: unknown;
+  error?: string;
+}
 
 export interface VersionResponse {
   success: boolean;
@@ -20,48 +30,70 @@ export class GlamArApi {
     private development: boolean = true,
   ) {}
 
-  async getVersion(appId?: string): Promise<VersionResponse | null> {
-    try {
-      const url = `${BASE_URL}/service/private/misc/v3.0/sdk-settings/version${
+  async getVersion(
+    appId?: string,
+    onResponse?: (response: VersionApiResponse) => void,
+  ): Promise<VersionResponse | null> {
+    const report = (response: VersionApiResponse) => {
+      try {
+        onResponse?.(response);
+      } catch {
+        /* Diagnostics must not affect fallback. */
+      }
+    };
+    for (const baseUrl of VERSION_API_URLS) {
+      const url = `${baseUrl}v3.0/sdk-settings/version${
         appId ? `?appId=${encodeURIComponent(appId)}` : ""
       }`;
 
-      // Build signed headers
-      const now = new Date();
-      const utcString = this.formatDateUTC(now);
+      try {
+        // Build signed headers
+        const now = new Date();
+        const utcString = this.formatDateUTC(now);
 
-      // Base request config
-      const request: AxiosRequestConfig = {
-        url,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${Buffer.from(this.accessKey).toString(
-            "base64",
-          )}`,
-          host: new URL(url).host,
-          [`${HEADER_PREFIX}param`]: utcString,
-        },
-      };
+        // Base request config
+        const request: AxiosRequestConfig = {
+          url,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${Buffer.from(this.accessKey).toString(
+              "base64",
+            )}`,
+            host: new URL(url).host,
+            [`${HEADER_PREFIX}param`]: utcString,
+          },
+        };
 
-      // Build canonical string + signature
-      const canonical = this.generateCanonicalString(request);
-      const signature = this.generateHmac(
-        SIGNING_KEY,
-        `${utcString}\n${this.sha256(canonical)}`,
-      );
+        // Build canonical string + signature
+        const canonical = this.generateCanonicalString(request);
+        const signature = this.generateHmac(
+          SIGNING_KEY,
+          `${utcString}\n${this.sha256(canonical)}`,
+        );
 
-      request.headers![`${HEADER_PREFIX}signature`] = `v1:${signature}`;
-      request.headers![`${HEADER_PREFIX}param`] =
-        Buffer.from(utcString).toString("base64");
+        request.headers![`${HEADER_PREFIX}signature`] = `v1:${signature}`;
+        request.headers![`${HEADER_PREFIX}param`] =
+          Buffer.from(utcString).toString("base64");
 
-      const res = await axios(request);
-      console.log("api response success", res.data);
-      return (res.data as VersionResponse) || null;
-    } catch (e) {
-      console.log("api response success", e);
-
-      return null;
+        const res = await axios(request);
+        report({ url, status: res.status, data: res.data });
+        console.log("api response success", res.data);
+        return (res.data as VersionResponse) || null;
+      } catch (e) {
+        const error = e as {
+          response?: { status: number; data: unknown };
+          message?: string;
+        };
+        report({
+          url,
+          status: error.response?.status ?? null,
+          data: error.response?.data ?? null,
+          error: error.message ?? String(e),
+        });
+        console.warn("[GlamAr] SDK version request failed:", baseUrl, e);
+      }
     }
+    return null;
   }
 
   /** Format UTC date like 20240101T123456Z */
