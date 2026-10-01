@@ -1,7 +1,7 @@
 {
   "name": "@glamario/core-react-native",
   "description": "GlamAR SDK for React Native",
-  "version": "1.0.6",
+  "version": "3.0.0",
   "license": "MIT",
   "type": "module",
   "main": "dist/cjs/index.js",
@@ -35,6 +35,7 @@
   ],
   "sideEffects": false,
   "scripts": {
+    "test": "node --test tests/*.test.cjs",
     "clean": "rimraf dist || rm -rf dist",
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:cjs": "tsc -p tsconfig.cjs.json",
